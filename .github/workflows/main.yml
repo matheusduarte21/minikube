@@ -27,21 +27,20 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      # Construir a imagem Docker (caso o Dockerfile esteja no diretório raiz)
-      - name: Build Docker image
-        run: docker build . -t ${{ secrets.DOCKER_USER }}/minha-aplicacao:latest
-
-      # Caso o Dockerfile esteja em um subdiretório, use o caminho completo:
-      # - name: Build Docker image
-      #   run: docker build -f docker/Dockerfile . -t ${{ secrets.DOCKER_USERNAME }}/minha-aplicacao:latest
 
       # Fazer login no DockerHub
       - name: Log in to DockerHub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
+          username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PWD }}
 
-      # Fazer push da imagem para o DockerHub
-      - name: Push Docker image to DockerHub
-        run: docker push ${{ secrets.DOCKER_USER }}/minha-aplicacao:latest
+      - name: Construção e push da imagem Docker
+        uses: docker/build-push-action@v6.8.0
+        with:
+          context: ./src
+          file: ./src/Dockerfile
+          push: true
+          tags: |
+            matheusduarte21/minikube:${{github.run_number}}
+            matheusduarte21/mnikube:latest
