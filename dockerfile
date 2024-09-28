@@ -5,7 +5,8 @@ FROM node:18 as build
 WORKDIR /app
 
 # Copiar os arquivos de dependências do package.json e instalar dependências
-COPY package.json yarn.lock ./
+COPY path/to/package.json path/to/yarn.lock ./
+
 RUN yarn install --frozen-lockfile
 
 # Copiar o restante dos arquivos
