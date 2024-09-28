@@ -13,8 +13,6 @@ COPY package*.json ./
 # Copie o restante do código-fonte para o diretório de trabalho
 COPY . .
 
-# Construa o aplicativo React
-RUN npm run install
 
 # Configure o servidor da sua escolha (por exemplo, Nginx)
 # Aqui, estamos usando o Nginx como servidor web
