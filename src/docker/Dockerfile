@@ -1,5 +1,5 @@
 # Use a imagem oficial do Node.js como base
-FROM node:20
+FROM node:18
 
 # Crie e defina o diretório de trabalho dentro do contêiner
 WORKDIR /app
@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instale as dependências
-RUN npm install
+# RUN npm install
 
 # Copie o restante do código-fonte para o diretório de trabalho
 COPY . .
