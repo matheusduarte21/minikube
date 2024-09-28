@@ -1,7 +1,7 @@
 # Etapa 1: Build da aplicação React
 FROM node:18 as build
 
-# Definir o diretório de trabalho
+# Definir o diretório de trabal
 WORKDIR /app
 
 # Copiar os arquivos de dependências do package.json e instalar dependências
