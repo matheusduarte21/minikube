@@ -1,0 +1,42 @@
+name: CI 
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checar o código-fonte do repositório
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Configurar o Node.js e instalar dependências
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # Instalar dependências
+      - name: Install dependencies
+        run: yarn install
+
+
+      # Fazer login no DockerHub
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_PWD }}
+
+      - name: Construção e push da imagem Docker
+        uses: docker/build-push-action@v6.8.0
+        with:
+          context: ./src
+          file: ./src/docker/Dockerfile
+          push: true
+          tags: |
+            matheusduarte21/minikube:${{github.run_number}}
+            matheusduarte21/minikube:latest
