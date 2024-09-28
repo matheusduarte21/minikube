@@ -8,11 +8,13 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instale as dependências
-# RUN npm install
+RUN npm install
 
 # Copie o restante do código-fonte para o diretório de trabalho
 COPY . .
 
+# Construa o aplicativo React
+RUN npm run build
 
 # Configure o servidor da sua escolha (por exemplo, Nginx)
 # Aqui, estamos usando o Nginx como servidor web
