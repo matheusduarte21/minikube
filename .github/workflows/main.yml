@@ -2,14 +2,10 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
-  build:
+  CI:
     runs-on: ubuntu-latest
 
     steps:
@@ -43,4 +39,4 @@ jobs:
           push: true
           tags: |
             matheusduarte21/minikube:${{github.run_number}}
-            matheusduarte21/mnikube:latest
+            matheusduarte21/minikube:latest
