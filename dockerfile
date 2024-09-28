@@ -1,20 +1,27 @@
-# Usar uma imagem base oficial do Node.js
-FROM node:18
+# Etapa 1: Build da aplicação React
+FROM node:18 as build
 
-# Definir o diretório de trabalho na imagem
-WORKDIR /usr/src/app
+# Definir o diretório de trabalho
+WORKDIR /app
 
-# Copiar os arquivos de package.json e package-lock.json
-COPY package*.json ./
+# Copiar os arquivos de dependências do package.json e instalar dependências
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
 
-# Instalar as dependências
-RUN npm install
-
-# Copiar o restante dos arquivos da aplicação
+# Copiar o restante dos arquivos
 COPY . .
 
-# Expôr a porta que a aplicação vai usar
-EXPOSE 3000
+# Compilar a aplicação React
+RUN yarn build
 
-# Comando para iniciar a aplicação
-CMD ["node", "app.js"]  # Substitua "app.js" pelo arquivo de entrada da sua aplicação
+# Etapa 2: Servir a aplicação usando o Nginx
+FROM nginx:alpine
+
+# Copiar os arquivos do build da etapa 1 para o Nginx
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Expor a porta que o Nginx estará usando
+EXPOSE 80
+
+# Comando para rodar o Nginx
+CMD ["nginx", "-g", "daemon off;"]
