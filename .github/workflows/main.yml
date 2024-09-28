@@ -34,8 +34,8 @@ jobs:
       - name: Construção e push da imagem Docker
         uses: docker/build-push-action@v6.8.0
         with:
-          context: ./src
-          file: ./src/dockerfile
+          context: /
+          file: /dockerfile
           push: true
           tags: |
             matheusduarte21/minikube:${{github.run_number}}
