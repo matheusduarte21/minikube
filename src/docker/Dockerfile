@@ -15,7 +15,7 @@ COPY . .
 # Compilar a aplicação React
 RUN yarn build
 
-# Etapa 2: Servir a aplicação usando o Nginx
+# Etapa 2: Servir a aplicação usando o 
 FROM nginx:1.23.1-alpine
 
 # Copiar os arquivos do build da etapa 1 para o Nginx
