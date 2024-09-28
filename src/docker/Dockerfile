@@ -1,6 +1,6 @@
-FROM node:18                   
+FROM node:latest        
 WORKDIR /app                   
-COPY package.json ./
+COPY package*.json ./
 ENV PATH /app/node_modules/.bin:$PATH    
 RUN npm install    
 RUN npm install react-scripts -g             
