@@ -1,30 +1,29 @@
-# Use a imagem oficial do Node.js como base
-FROM node:18
+# Etapa 1: Build da aplicação React
+FROM node:latest as build
 
-# Crie e defina o diretório de trabalho dentro do contêiner
+# Definir o diretório de trabalho
 WORKDIR /app
 
-# Copie o arquivo package.json e package-lock.json para o diretório de trabalho
+# Copiar os arquivos de dependências do package.json e package-lock.json
 COPY package*.json ./
 
-# Instale as dependências
+# Instalar as dependências
 RUN npm install
 
-# Copie o restante do código-fonte para o diretório de trabalho
+# Copiar o restante dos arquivos da aplicação
 COPY . .
 
-# Construa o aplicativo React
+# Compilar a aplicação React
 RUN npm run build
 
-# Configure o servidor da sua escolha (por exemplo, Nginx)
-# Aqui, estamos usando o Nginx como servidor web
+# Etapa 2: Servir a aplicação usando Nginx
 FROM nginx:alpine
 
-# Copie os arquivos de build do React para o diretório de publicação do Nginx
-COPY --from=0 /app/build /usr/share/nginx/html
+# Copiar os arquivos do build da etapa 1 para o Nginx
+COPY --from=build /app/build /usr/share/nginx/html
 
-# Exponha a porta 80 para acessar o aplicativo no navegador
+# Expor a porta que o Nginx estará usando
 EXPOSE 80
 
-# Comando para iniciar o servidor Nginx
+# Comando para rodar o Nginx
 CMD ["nginx", "-g", "daemon off;"]
