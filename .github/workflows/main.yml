@@ -19,11 +19,6 @@ jobs:
         with:
           node-version: '20'
 
-      # Instalar dependências
-      - name: Install dependencies
-        run: yarn install
-
-
       # Fazer login no DockerHub
       - name: Log in to DockerHub
         uses: docker/login-action@v2
