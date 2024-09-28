@@ -1,17 +1,13 @@
-name: CI 
+name: CI/CD
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
-  build:
+  CI:
     runs-on: ubuntu-latest
-
+    
     steps:
       # Checar o código-fonte do repositório
       - name: Checkout repository
@@ -27,20 +23,17 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      # Testes da aplicação (opcional)
-      - name: Run tests
-        run: yarn test
+      # Fazer login no DockerHub
+      - name: Autenticação no Docker Hub
+        uses: docker/login-action@v3.3.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_PWD }}
 
       # Construir a imagem Docker
       - name: Build Docker image
         run: docker build . -t ${{ secrets.DOCKER_USERNAME }}/minha-aplicacao:latest
 
-      # Fazer login no DockerHub
-      - name: Log in to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
 
       # Fazer push da imagem para o DockerHub
       - name: Push Docker image to DockerHub
