@@ -15,7 +15,7 @@ COPY . .
 RUN yarn build
 
 # Etapa 2: Servir a aplicação usando o Nginx
-FROM nginx:alpine
+FROM nginx:1.23.1-alpine
 
 # Copiar os arquivos do build da etapa 1 para o Nginx
 COPY --from=build /app/build /usr/share/nginx/html
