@@ -6,10 +6,10 @@ FROM node:lts AS development
 WORKDIR /app
 
 # 
-COPY package.json /app/package.json
+COPY package.json package-lock.json /app/
 
 # Same as npm install
-RUN npm ci
+RUN npm install
 
 COPY . /app
 
