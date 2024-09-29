@@ -6,12 +6,12 @@ FROM node:lts AS development
 WORKDIR /app
 
 # 
-COPY package.json package-lock.json /app/
+COPY src/package.json src/package-lock.json /app/
 
 # Same as npm install
 RUN npm install
 
-COPY . /app
+COPY src /app/
 
 ENV CI=true
 ENV PORT=3000
