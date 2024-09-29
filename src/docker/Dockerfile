@@ -1,29 +1,57 @@
-# Etapa 1: Build da aplicação React
-FROM node:latest as build
+# syntax=docker/dockerfile:1.4
+# 1. For build React app
+FROM node:lts AS development
 
-# Definir o diretório de trabalho
+# Set working directory
 WORKDIR /app
 
-# Copiar os arquivos de dependências do package.json e package-lock.json
-COPY package*.json ./
+# 
+COPY package.json /app/package.json
+COPY package-lock.json /app/package-lock.json
 
-# Instalar as dependências
-RUN npm install
+# Same as npm install
+RUN npm ci
 
-# Copiar o restante dos arquivos da aplicação
-COPY . .
+COPY . /app
 
-# Compilar a aplicação React
+ENV CI=true
+ENV PORT=3000
+
+CMD [ "npm", "start" ]
+
+FROM development AS build
+
 RUN npm run build
 
-# Etapa 2: Servir a aplicação usando Nginx
+
+FROM development as dev-envs
+RUN <<EOF
+apt-get update
+apt-get install -y --no-install-recommends git
+EOF
+
+RUN <<EOF
+useradd -s /bin/bash -m vscode
+groupadd docker
+usermod -aG docker vscode
+EOF
+# install Docker tools (cli, buildx, compose)
+COPY --from=gloursdocker/docker / /
+CMD [ "npm", "start" ]
+
+# 2. For Nginx setup
 FROM nginx:alpine
 
-# Copiar os arquivos do build da etapa 1 para o Nginx
-COPY --from=build /app/build /usr/share/nginx/html
+# Copy config nginx
+COPY --from=build /app/.nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expor a porta que o Nginx estará usando
-EXPOSE 80
+WORKDIR /usr/share/nginx/html
 
-# Comando para rodar o Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Remove default nginx static assets
+RUN rm -rf ./*
+
+# Copy static assets from builder stage
+COPY --from=build /app/build .
+
+# Containers run nginx with global directives and daemon off
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
