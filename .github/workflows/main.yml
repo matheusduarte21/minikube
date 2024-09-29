@@ -30,7 +30,7 @@ jobs:
         uses: docker/build-push-action@v6.8.0
         with:
           context: ./src
-          file: .src/docker/Dockerfile
+          file: ./src/Dockerfile
           push: true
           tags: |
             matheusduarte21/minikube:${{github.run_number}}
